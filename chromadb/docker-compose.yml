@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+    chroma:
+      image: chromadb/chroma:0.6.4.dev432
+      volumes:
+        - index_data:/chroma/.chroma/index
+      ports:
+        - 8000:8000
+      networks:
+        - net
+      environment:
+        - CHROMA_ADDRESS=0.0.0.0
+
+volumes:
+  index_data:
+
+networks:
+  net:
+    driver: bridge

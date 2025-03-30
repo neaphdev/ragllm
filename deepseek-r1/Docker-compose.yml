@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-deepseek
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+      - ./ollama.env:/etc/ollama/config.env
+    restart: unless-stopped
+    command: serve
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-H", "Authorization: Bearer ${OLLAMA_API_KEY}", "http://localhost:11434/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+      - OLLAMA_MODELS=/root/.ollama/models
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY}
+
+  ollama-model-loader:
+    image: ollama/ollama:latest
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: "no"
+    command: sh -c "ollama login --key ${OLLAMA_API_KEY} && ollama run deepseek-r1:7b"
+    volumes:
+      - ollama_data:/root/.ollama
+    environment:
+      - OLLAMA_API_KEY=${OLLAMA_API_KEY}
+
+volumes:
+  ollama_data:
+    name: ollama_data
