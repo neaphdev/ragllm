@@ -1,16 +1,15 @@
-services:
+ervices:
     ui:
       build: ./app
       ports:
         - 8080:8080
       volumes:
         - ./app:/app
+
       environment:
-        - MODEL=phi3
-        - EMBEDDINGS_MODEL_NAME=Meta-Llama-3.1-70B-Instruct
+        - MODEL=llama3
+        - EMBEDDINGS_MODEL_NAME=all-MiniLM-L6-v2
         - TARGET_SOURCE_CHUNKS=5
-        - AWANLLM_API_URL=https://api.awanllm.com/v1
-        - AWANLLM_API_KEY=67e7ee0b-64d1-47a8-9f3e-1d4223ce7afb
 
 volumes:
   index_data:
